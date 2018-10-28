@@ -14,10 +14,10 @@ router.post("/signup", (req, res, next) => {
       });
       user.save()
         .then(result => {
-          res.status(201).json({ message: "User Created", data: result});
+          return res.status(201).json({ message: "User Created", data: result});
         })
         .catch(err => {
-          res.status(500).json({ error: err});
+          return res.status(500).json({message: "Invalid Authentication Credentials!"});
         });
     });
 });
@@ -27,14 +27,14 @@ router.post("/login", (req, res, next) => {
   User.findOne({ email: req.body.email})
     .then((user) => {
       if(!user){
-        return res.status(401).json({ message: "Authentication Failed" });
+        return res.status(401).json({ message: "Email Authentication Failed" });
       }
       searchedUser = user;
       return bcrypt.compare(req.body.password, user.password);
     })
     .then(result => {;
       if(!result) {
-        return res.status(401).json({ message: "Authentication Failed" });
+        return res.status(401).json({ message: "Password Authentication Failed" });
       }
       const token = jwt.sign(
         {
@@ -44,15 +44,16 @@ router.post("/login", (req, res, next) => {
         'longer_than_this_secret_key',
         { expiresIn: '1h' }
       );
-      res.status(200).json(
+      return res.status(200).json(
         {
           token: token,
-          expiresIn: 3600
+          expiresIn: 3600,
+          userId: searchedUser._id
         }
       );
     })
     .catch(err => {
-      res.status(401).json({ message: "Authentication Failed", err:err });
+      return res.status(401).json({ message: "Invalid Authentication Credentials", err:err });
     });
 });
 

@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { PostsService } from '../posts.service';
 import { Post } from '../post.model';
 import { mimeType } from './mime-type.validator';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-post-create',
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
   enteredTitle = '';
   enteredContent = '';
   post: Post;
@@ -20,10 +22,16 @@ export class PostCreateComponent implements OnInit {
   imagePreview: string;
   private mode = 'create';
   private postId: string;
+  private authStatusSub: Subscription;
 
-  constructor (public postsService: PostsService, public route: ActivatedRoute) {}
+  constructor (public postsService: PostsService, public route: ActivatedRoute, public authService: AuthService) {}
 
   ngOnInit() {
+    this.authStatusSub = this.authService.getAuthStatusListener()
+      .subscribe(authStaus => {
+        this.isLoading = false;
+      });
+
     this.form = new FormGroup ({
       title: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(3)]
@@ -48,7 +56,8 @@ export class PostCreateComponent implements OnInit {
               id: responseData.post._id,
               title: responseData.post.title,
               content: responseData.post.content,
-              imagePath: responseData.post.imagePath
+              imagePath: responseData.post.imagePath,
+              creator: responseData.post.creator
             };
             this.form.setValue({
               title: this.post.title,
@@ -90,5 +99,9 @@ export class PostCreateComponent implements OnInit {
       this.imagePreview = reader.result as string;
     };
     reader.readAsDataURL(file);
+  }
+
+  ngOnDestroy() {
+    this.authStatusSub.unsubscribe();
   }
 }

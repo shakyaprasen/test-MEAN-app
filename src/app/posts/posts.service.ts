@@ -23,7 +23,8 @@ export class PostsService {
                 title: post.title,
                 content: post.content,
                 id: post._id,
-                imagePath: post.imagePath
+                imagePath: post.imagePath,
+                creator: post.creator
               };
             }),
             maxPosts: res.maxPosts
@@ -48,7 +49,8 @@ export class PostsService {
         _id: string,
         title: string,
         content: string,
-        imagePath: string
+        imagePath: string,
+        creator: string
       } }>('http://localhost:3000/api/posts/' + id);
   }
 
@@ -58,7 +60,7 @@ export class PostsService {
     postData.append('content', content);
     postData.append('image', image, title);
 
-    this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData)
+    return this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData)
       .subscribe((resData) => {
         // const post: Post = {
         //   id: resData.post.id,
@@ -84,10 +86,11 @@ export class PostsService {
         id: id,
         title: title,
         content: content,
-        imagePath: image
+        imagePath: image,
+        creator: null
       };
     }
-    this.http.put('http://localhost:3000/api/posts/' + id, postData)
+    return this.http.put('http://localhost:3000/api/posts/' + id, postData)
       .subscribe((resData) => {
         // const updatedPosts = [...this.posts];
         // const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
