@@ -6,15 +6,14 @@ const PostController = require("../controller/posts");
 
 const router = express.Router();
 
-router.post('', checkAuth ,ExtractFile, PostController.createPost);
+router.post("", checkAuth, ExtractFile, PostController.createPost);
 
-router.put('/:id', checkAuth, ExtractFile, PostController.editPost);
+router.put("/:id", checkAuth, ExtractFile, PostController.editPost);
 
-router.delete('/:id', checkAuth, PostController.deletePost);
+router.delete("/:id", checkAuth, PostController.deletePost);
 
-router.get('', PostController.getAllPosts);
+router.get("", PostController.getAllPosts);
 
-router.get('/:id', PostController.getSinglePost);
+router.get("/:id", PostController.getSinglePost);
 
 module.exports = router;
-

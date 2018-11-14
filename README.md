@@ -1,4 +1,7 @@
+DONT FORGET TO ADD AN IMAGE FOLDER IN backend path i.e. './backend/images'
 
+#Use $npm run start:server to start nodejs server in nodemon
+#Use npm serve to start the angular app
 
 # MeanApp
 
@@ -28,4 +31,4 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-DONT FORGET TO ADD AN IMAGE FOLDER IN path './backend/images'
+
